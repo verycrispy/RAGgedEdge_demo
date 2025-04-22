@@ -1,0 +1,56 @@
+﻿@page "/ask"
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject NavigationManager NavigationManager
+
+<PageTitle>RAG Demo</PageTitle>
+<h3>RAG Demo</h3>
+
+<textarea @bind="Question" rows="4" cols="60" placeholder="Type your question here..."></textarea>
+<br />
+<button @onclick="SubmitQuestion" disabled="@IsLoading">Ask</button>
+
+<h4>Answer:</h4>
+@if (IsLoading)
+{
+    <p><em>Loading...</em></p>
+}
+<pre>@Answer</pre>
+
+@code {
+    private string Question = "";
+    private string Answer = "";
+    private bool IsLoading = false;
+
+    private async Task SubmitQuestion()
+    {
+        Console.WriteLine("SubmitQuestion called!");
+        Answer = "";
+        IsLoading = true;
+
+        using var http = new HttpClient
+            {
+                BaseAddress = new Uri(NavigationManager.BaseUri)
+            };
+
+        var request = new HttpRequestMessage(HttpMethod.Post, "askquestion")
+            {
+                Content = new StringContent(Question)
+            };
+
+        var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+        using var stream = await response.Content.ReadAsStreamAsync();
+        using var reader = new StreamReader(stream);
+
+        while (!reader.EndOfStream)
+        {
+            var ch = (char)reader.Read();
+            Answer += ch;
+            StateHasChanged(); // update UI incrementally
+            await Task.Delay(10); // smooth typing effect
+        }
+
+        IsLoading = false;
+        StateHasChanged();
+    }
+}
