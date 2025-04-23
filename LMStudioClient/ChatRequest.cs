@@ -10,4 +10,6 @@ public class ChatRequest
     public Message[] Messages { get; set; }
     [JsonPropertyName("temperature")]
     public float Temperature { get; set; }
+    [JsonPropertyName("stream")]
+    public bool Stream { get; set; }
 }

@@ -49,3 +49,28 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+ /* CUSTOM */
+
+.content {
+    max-width: none !important;
+    width: 100%;
+}
+
+.answer-output {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    display: block;
+}
+
+pre code {
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 1em;
+    display: block;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: Consolas, Monaco, "Courier New", monospace;
+    white-space: pre;
+}

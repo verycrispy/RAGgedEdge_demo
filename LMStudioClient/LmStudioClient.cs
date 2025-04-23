@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using LMStudioClient.Model;
 using Microsoft.Extensions.Configuration;
 
 namespace LMStudioClient;
@@ -16,9 +17,10 @@ public class LmStudioClient
 
     public async Task<float[]?> GetEmbeddingAsync(string inputText, string model)
     {
-        var requestBody = new {
+        var requestBody = new
+        {
             model = model,
-            input = inputText 
+            input = inputText
         };
 
         // Serialize the request body using System.Text.Json
@@ -40,10 +42,10 @@ public class LmStudioClient
 
     public async Task<EmbeddingItem[]?> GetEmbeddingsAsync(string[] inputTexts, string model)
     {
-        var requestBody = new 
-        { 
+        var requestBody = new
+        {
             model = model,
-            input = inputTexts 
+            input = inputTexts
         };
 
         // Serialize the request body using System.Text.Json
@@ -69,11 +71,12 @@ public class LmStudioClient
         var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
         ChatRequest message = new ChatRequest()
-       {
-           Model = config["LMStudio:Llm"],
-           Temperature = 0.7f,
-           Messages = messages,
-       };
+        {
+            Model = config["LMStudio:Llm"],
+            Temperature = 0.7f,
+            Messages = messages,
+            Stream = false
+        };
 
         // Serialize the request body using System.Text.Json
         var content = new StringContent(JsonSerializer.Serialize(message), Encoding.UTF8, "application/json");
@@ -89,6 +92,48 @@ public class LmStudioClient
         else
         {
             return null;
+        }
+    }
+
+    public async IAsyncEnumerable<string> StreamChatCompletionsAsync(params Message[] messages)
+    {
+        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
+        ChatRequest message = new ChatRequest()
+        {
+            Model = config["LMStudio:Llm"],
+            Temperature = 0.7f,
+            Messages = messages,
+            Stream = true
+        };
+
+        var request = new HttpRequestMessage(HttpMethod.Post, "/v1/chat/completions")
+        {
+            Content = new StringContent(JsonSerializer.Serialize(message), Encoding.UTF8, "application/json")
+        };
+
+        var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+        response.EnsureSuccessStatusCode();
+
+        var stream = await response.Content.ReadAsStreamAsync();
+        using var reader = new StreamReader(stream);
+
+        while (!reader.EndOfStream)
+        {
+            var line = await reader.ReadLineAsync();
+
+            if (string.IsNullOrWhiteSpace(line)) continue;
+            if (line.StartsWith("data: "))
+                line = line.Substring("data: ".Length);
+
+            if (line == "[DONE]") break;
+
+            var chunk = JsonSerializer.Deserialize<StreamChunk>(line);
+            var contentPiece = chunk?.Choices?.FirstOrDefault()?.Delta?.Content;
+            if (!string.IsNullOrEmpty(contentPiece))
+            {
+                yield return contentPiece;
+            }
         }
     }
 

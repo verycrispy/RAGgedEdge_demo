@@ -1,0 +1,36 @@
+﻿@using System.Net
+@using System.Text
+
+@if (!string.IsNullOrEmpty(Answer))
+{
+    <div class="answer" @onclick="OnClick">
+        @((MarkupString)FormatAnswer(Answer))
+    </div>
+}
+
+@code {
+    [Parameter] public string Answer { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    private string FormatAnswer(string answer)
+    {
+        var parts = answer.Split("```");
+        var sb = new StringBuilder();
+
+        for (int i = 0; i < parts.Length; i++)
+        {
+            if (i % 2 == 0)
+            {
+                sb.Append(WebUtility.HtmlEncode(parts[i]).Replace("\n", "<br />"));
+            }
+            else
+            {
+                sb.Append("<pre><code>");
+                sb.Append(WebUtility.HtmlEncode(parts[i]));
+                sb.Append("</code></pre>");
+            }
+        }
+
+        return sb.ToString();
+    }
+}
