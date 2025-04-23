@@ -20,7 +20,6 @@ public class AskQuestionHandler
     public async Task HandleAsync(HttpContext context)
     {
         context.Response.Headers.Append("Content-Type", "text/event-stream");
-
         var messages = await CreateMessages(context);
 
         var answer = await _lmClient.GetChatCompletionsAsync(messages);
@@ -31,9 +30,6 @@ public class AskQuestionHandler
     public async Task HandleStreamedAsync(HttpContext context)
     {
         context.Response.Headers.Append("Content-Type", "text/event-stream");
-        using var reader = new StreamReader(context.Request.Body);
-        var question = await reader.ReadToEndAsync();
-
         var messages = await CreateMessages(context);
 
         await foreach (var part in _lmClient.StreamChatCompletionsAsync(messages))

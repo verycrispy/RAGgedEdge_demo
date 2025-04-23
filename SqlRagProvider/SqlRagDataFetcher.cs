@@ -18,7 +18,7 @@ public class SqlRagDataFetcher
             vectorsTable.Rows.Add(i + 1, vectors[i]);
         }
 
-        var results = await SqlVectorExecuter.RunVectorSearchStoredProcedure(vectors);
+        var results = await SqlVectorExecuter.RunVectorSearchStoredProcedure(vectorsTable);
         return results.ToArray();
     }
 }

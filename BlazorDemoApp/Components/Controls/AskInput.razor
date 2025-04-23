@@ -1,4 +1,5 @@
-﻿<textarea @bind="Value"
+﻿<textarea @bind="_internalValue"
+          @oninput="OnInput"
           @onkeydown="HandleKeyDown"
           rows="4"
           cols="60"
@@ -6,9 +7,22 @@
 </textarea>
 
 @code {
+    private string _internalValue;
+
     [Parameter] public string Value { get; set; }
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
     [Parameter] public EventCallback OnEnter { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        _internalValue = Value;
+    }
+
+    private async Task OnInput(ChangeEventArgs e)
+    {
+        _internalValue = e.Value?.ToString();
+        await ValueChanged.InvokeAsync(_internalValue);
+    }
 
     private async Task HandleKeyDown(KeyboardEventArgs e)
     {
