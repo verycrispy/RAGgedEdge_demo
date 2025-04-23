@@ -1,0 +1,20 @@
+﻿<textarea @bind="Value"
+          @onkeydown="HandleKeyDown"
+          rows="4"
+          cols="60"
+          placeholder="Type your question here...">
+</textarea>
+
+@code {
+    [Parameter] public string Value { get; set; }
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public EventCallback OnEnter { get; set; }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !e.ShiftKey)
+        {
+            await OnEnter.InvokeAsync();
+        }
+    }
+}

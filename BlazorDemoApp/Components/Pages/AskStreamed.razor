@@ -1,4 +1,4 @@
-﻿@page "/ask"
+﻿@page "/askstreamed"
 @using BlazorDemoApp.Components.Controls
 @rendermode InteractiveServer
 @attribute [StreamRendering]
@@ -34,14 +34,23 @@
                 BaseAddress = new Uri(NavigationManager.BaseUri)
             };
 
-        var request = new HttpRequestMessage(HttpMethod.Post, "askquestion")
+        var request = new HttpRequestMessage(HttpMethod.Post, "askquestion/stream")
             {
                 Content = new StringContent(Question)
             };
 
         var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-        response.EnsureSuccessStatusCode();
-        Answer = await response.Content.ReadAsStringAsync();
+        using var stream = await response.Content.ReadAsStreamAsync();
+        using var reader = new StreamReader(stream);
+
+        while (!reader.EndOfStream)
+        {
+            var ch = (char)reader.Read();
+            Answer += ch;
+            StateHasChanged();
+            await Task.Delay(1);
+        }
+
         IsLoading = false;
         StateHasChanged();
     }
