@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace LMStudioClient;
+namespace LMStudioClient.Model;
 public class Message
 {
     [JsonPropertyName("role")]

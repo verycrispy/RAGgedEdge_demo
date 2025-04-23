@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMStudioClient", "LMStudioC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiAssistant", "WikiAssistent\WikiAssistant.csproj", "{FB220934-751D-4D1A-9D51-BC0DB2B7FF1C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlRagProvider", "SqlRagProvider\SqlRagProvider.csproj", "{66B13C68-CB08-44B0-ADA1-5743A2C15DCF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{FB220934-751D-4D1A-9D51-BC0DB2B7FF1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB220934-751D-4D1A-9D51-BC0DB2B7FF1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB220934-751D-4D1A-9D51-BC0DB2B7FF1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66B13C68-CB08-44B0-ADA1-5743A2C15DCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66B13C68-CB08-44B0-ADA1-5743A2C15DCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66B13C68-CB08-44B0-ADA1-5743A2C15DCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66B13C68-CB08-44B0-ADA1-5743A2C15DCF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

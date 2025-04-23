@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LMStudioClient\LMStudioClient.csproj" />
+    <ProjectReference Include="..\SqlRagProvider\SqlRagProvider.csproj" />
     <ProjectReference Include="..\WikiAssistent\WikiAssistant.csproj" />
   </ItemGroup>
 
