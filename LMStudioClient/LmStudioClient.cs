@@ -40,31 +40,30 @@ public class LmStudioClient
         }
     }
 
-    //public async Task<EmbeddingItem[]?> GetEmbeddingsAsync(string[] inputTexts, string model)
-    //{
-    //    var requestBody = new
-    //    {
-    //        model = model,
-    //        input = inputTexts
-    //    };
+    public async Task<EmbeddingItem[]?> GetEmbeddingsAsync(string[] inputTexts, string model)
+    {
+        var requestBody = new
+        {
+            model = model,
+            input = inputTexts
+        };
 
-    //    // Serialize the request body using System.Text.Json
-    //    var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
+        // Serialize the request body using System.Text.Json
+        var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
 
-    //    var response = await _httpClient.PostAsync("/v1/embeddings", content);
-    //    response.EnsureSuccessStatusCode();
+        var response = await _httpClient.PostAsync("/v1/embeddings", content);
+        response.EnsureSuccessStatusCode();
 
-    //    var responseJson = await response.Content.ReadAsStringAsync();
-    //    if (responseJson != null)
-    //    {
-    //        return GetEmbeddingItems(responseJson).ToArray();
-    //    }
-    //    else
-    //    {
-    //        return null;
-    //    }
-
-    //}
+        var responseJson = await response.Content.ReadAsStringAsync();
+        if (responseJson != null)
+        {
+            return GetEmbeddingItems(responseJson).ToArray();
+        }
+        else
+        {
+            return null;
+        }
+    }
 
     public async Task<string> GetChatCompletionsAsync(params Message[] messages)
     {

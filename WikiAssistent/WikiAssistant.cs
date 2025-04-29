@@ -3,7 +3,7 @@
 namespace WikiAssistent;
 public class WikiAssistant
 {
-    public static string BuildChatPrompt()
+    public static string BuildChatSystemPrompt()
     {
         var sb = new StringBuilder();
 
@@ -19,7 +19,7 @@ public class WikiAssistant
     }
 
 
-    public static string BuildChatResponse(string question)
+    public static string BuildQuestionPrompt(string question)
     {
         var sb = new StringBuilder();
 
@@ -27,9 +27,7 @@ public class WikiAssistant
         sb.AppendLine($"Generate an answer directly to your collegue using these articles.");
         sb.AppendLine($"Phrase your response as though you are helping a colleague directly. Show code samples if they are included in the articles.");
         sb.AppendLine($"After your answer to the users question, list the articles in order of most similar to least similar. Show the Title and subject, but don't show the similarity score or content in this list");
-        //sb.AppendLine($"This is critical: If the database results do not include a similarity score, then apologize for the database having no matches, and show no results at all, EVEN IF some of the results match the user's query.");
-        //sb.AppendLine($"Limit your response to the information returned by the database; do not embellish with any other information.");
-
+        
         return sb.ToString();
     }
 }

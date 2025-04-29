@@ -1,0 +1,50 @@
+﻿@page "/Configuration"
+@using BlazorDemoApp.Components.Controls
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject NavigationManager NavigationManager
+
+<PageTitle>Configuration</PageTitle>
+
+<h1>Configuration Page</h1>
+
+<button class="btn btn-primary" @onclick="CreateVectors">Create Vectors</button>
+
+@foreach (var line in lines)
+{
+    <div>@line</div>
+}
+
+@code {
+    private bool IsLoading = false;
+    private List<string> lines = new();
+
+    private async Task CreateVectors()
+    {
+        lines = new List<string> {"Creating vectors"};
+        Console.WriteLine("SubmitQuestion called!");
+        IsLoading = true;
+
+        using var http = new HttpClient
+            {
+                BaseAddress = new Uri(NavigationManager.BaseUri)
+            };
+
+        var request = new HttpRequestMessage(HttpMethod.Post, "config/vectorize-db");
+
+        var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+        using var stream = await response.Content.ReadAsStreamAsync();
+        using var reader = new StreamReader(stream);
+
+        while (!reader.EndOfStream)
+        {
+            var line = reader.ReadLine();
+            lines.Add(line ?? "");
+            StateHasChanged();
+            await Task.Delay(1);
+        }
+
+        IsLoading = false;
+        StateHasChanged();
+    }
+}

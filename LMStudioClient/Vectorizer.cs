@@ -8,7 +8,7 @@ public class Vectorizer
     {
         var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
         LmStudioClient lmStudioClient = new LmStudioClient(config["LMStudio:Endpoint"]);
-
+        
         var result = await lmStudioClient.GetEmbeddingAsync(question, config["LmStudio:Embeddings"]);
         return result;
     }

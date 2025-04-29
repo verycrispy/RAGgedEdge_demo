@@ -6,12 +6,12 @@ using Microsoft.Extensions.Options;
 using SqlRagProvider;
 using WikiAssistent;
 
-public class AskQuestionHandler
+public class AskHandler
 {
     private readonly LMStudioConfig _config;
     private readonly LmStudioClient _lmClient;
 
-    public AskQuestionHandler(IOptions<LMStudioConfig> config)
+    public AskHandler(IOptions<LMStudioConfig> config)
     {
         _config = config.Value;
         _lmClient = new LmStudioClient(_config.Endpoint);
@@ -49,7 +49,7 @@ public class AskQuestionHandler
         var results = await SqlRagDataFetcher.GetDatabaseResults(vectors);
 
         var sb = new StringBuilder();
-        sb.Append(WikiAssistant.BuildChatResponse(question));
+        sb.Append(WikiAssistant.BuildQuestionPrompt(question));
         sb.AppendLine();
 
         if (results.Length == 0)
@@ -69,7 +69,7 @@ public class AskQuestionHandler
         }
         var userMessagePrompt = sb.ToString();
 
-        var promptSetup = new Message { Content = WikiAssistant.BuildChatPrompt(), Role = "system" };
+        var promptSetup = new Message { Content = WikiAssistant.BuildChatSystemPrompt(), Role = "system" };
         var userQuestion = new Message { Content = question, Role = "user" };
         var questionPrompt = new Message { Content = userMessagePrompt, Role = "system" };
         messages.Add(questionPrompt);
