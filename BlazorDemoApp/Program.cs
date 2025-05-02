@@ -1,7 +1,8 @@
 using BlazorDemoApp.Components;
+using BlazorDemoApp.wwwroot.Features.Ask;
+using BlazorDemoApp.wwwroot.Features.Configuration;
 using LMStudioClient;
-using Microsoft.Extensions.Options;
-using WikiAssistent;
+using SqlRagProvider;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +11,15 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddHttpClient();
 builder.Services.Configure<LMStudioConfig>(builder.Configuration.GetSection("LMStudio"));
-builder.Services.AddScoped<AskQuestionHandler>();
+builder.Services.AddScoped<AskHandler>();
+builder.Services.AddScoped<VectorizeDatabaseHandler>();
+builder.Services.AddScoped<ChangeModelHandler>();
+builder.Services.AddScoped<SqlDataVectorizer>();
+builder.Services.AddScoped<Vectorizer>();
+builder.Services.AddScoped<LmStudioClient>();
+builder.Services.AddSingleton<ConfigService>();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -30,14 +37,17 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-app.MapPost("/askquestion", async (AskQuestionHandler handler, HttpContext context) =>
-{
-    await handler.HandleAsync(context);
-});
+app.MapAskEndpoints();
+app.MapConfigurationEndpoints();
 
-app.MapPost("/askquestion/stream", async (AskQuestionHandler handler, HttpContext context) =>
-{
-    await handler.HandleStreamedAsync(context);
-});
+//app.MapPost("/askquestion", async (AskQuestionHandler handler, HttpContext context) =>
+//{
+//    await handler.HandleAsync(context);
+//});
+
+//app.MapPost("/askquestion/stream", async (AskQuestionHandler handler, HttpContext context) =>
+//{
+//    await handler.HandleStreamedAsync(context);
+//});
 
 app.Run();

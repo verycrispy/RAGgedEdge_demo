@@ -6,15 +6,15 @@ using Microsoft.Extensions.Options;
 using SqlRagProvider;
 using WikiAssistent;
 
-public class AskQuestionHandler
+public class AskHandler
 {
-    private readonly LMStudioConfig _config;
     private readonly LmStudioClient _lmClient;
+    private readonly Vectorizer _vectorizer;
 
-    public AskQuestionHandler(IOptions<LMStudioConfig> config)
+    public AskHandler(LmStudioClient lmStudioClient, Vectorizer vectorizer)
     {
-        _config = config.Value;
-        _lmClient = new LmStudioClient(_config.Endpoint);
+        _lmClient = lmStudioClient;
+        _vectorizer = vectorizer;
     }
 
     public async Task HandleAsync(HttpContext context)
@@ -45,11 +45,11 @@ public class AskQuestionHandler
         using var reader = new StreamReader(context.Request.Body);
         var question = await reader.ReadToEndAsync();
 
-        var vectors = await Vectorizer.VectorizeQuestion(question);
+        var vectors = await _vectorizer.VectorizeQuestion(question);
         var results = await SqlRagDataFetcher.GetDatabaseResults(vectors);
 
         var sb = new StringBuilder();
-        sb.Append(WikiAssistant.BuildChatResponse(question));
+        sb.Append(WikiAssistantPromptBuilder.BuildQuestionPrompt(question));
         sb.AppendLine();
 
         if (results.Length == 0)
@@ -69,12 +69,12 @@ public class AskQuestionHandler
         }
         var userMessagePrompt = sb.ToString();
 
-        var promptSetup = new Message { Content = WikiAssistant.BuildChatPrompt(), Role = "system" };
-        var userQuestion = new Message { Content = question, Role = "user" };
+        var promptSetup = new Message { Content = WikiAssistantPromptBuilder.BuildChatSystemPrompt(), Role = "system" };
         var questionPrompt = new Message { Content = userMessagePrompt, Role = "system" };
+        var userQuestion = new Message { Content = question, Role = "user" };
+        messages.Add(promptSetup);
         messages.Add(questionPrompt);
         messages.Add(userQuestion);
-        messages.Add(questionPrompt);
 
         return messages.ToArray();
     } 

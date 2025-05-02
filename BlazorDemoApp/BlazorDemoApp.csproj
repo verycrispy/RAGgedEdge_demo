@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="Features\Ask\AskEndpoints.cs" />
+    <Content Include="Features\Ask\AskHandler.cs" />
+    <Content Include="Features\Configuration\ConfigurationEndpoints.cs" />
+    <Content Include="Features\Configuration\VectorizeDatabaseHandler.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\LMStudioClient\LMStudioClient.csproj" />
     <ProjectReference Include="..\SqlRagProvider\SqlRagProvider.csproj" />
     <ProjectReference Include="..\WikiAssistent\WikiAssistant.csproj" />
