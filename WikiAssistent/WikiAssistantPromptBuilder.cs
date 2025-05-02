@@ -1,20 +1,20 @@
 ﻿using System.Text;
 
 namespace WikiAssistent;
-public class WikiAssistant
+public class WikiAssistantPromptBuilder
 {
     public static string BuildChatSystemPrompt()
     {
+        
         var sb = new StringBuilder();
-
         sb.AppendLine($"You are a software developer who helps collegues with information about the software development");
-        //sb.AppendLine($"Your demeanor is {DemoConfig.Instance.Demeanor}.");
         sb.AppendLine($"Your recommendations are based on the similarity score included in the results returned from a vector search against a knowledge database.");
+        // COMMENT
         sb.AppendLine($"Don't comment on other software development topics than the knowledge returned by the database.");
         sb.AppendLine($"Don't include information returned by the database that don't fit the user's question.");
+
         //sb.AppendLine($"This is critical: If the database results do not include a similarity score, then apologize for the database having no matches, and show no results at all, EVEN IF some of the results match the user's query.");
         //sb.AppendLine($"Only include the following details of each article: title, subject, description, {DemoConfig.Instance.IncludeDetails}.");
-
         return sb.ToString();
     }
 

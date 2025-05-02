@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using SqlRagProvider.Model;
@@ -7,41 +8,40 @@ namespace SqlRagProvider;
 
 internal class SqlVectorExecuter
 {
-    public static async Task<IEnumerable<WikiPageResult>> RunVectorSearchStoredProcedure(object vectors)
+    public static async Task<IEnumerable<WikiPageResult>> RunVectorSearchStoredProcedure(DataTable vectors)
     {
-        try
+        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+        using var conn = new SqlConnection(config["ConnectionString"]);
+        await conn.OpenAsync();
+
+        var parameters = new DynamicParameters();
+
+        var vectorParam = new SqlParameter("@Vectors", SqlDbType.Structured)
         {
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-            using var conn = new SqlConnection(config["ConnectionString"]);
-            await conn.OpenAsync();
+            TypeName = "dbo.VectorsUdt",
+            Value = vectors
+        };
 
-            using var cmd = new SqlCommand("RunWikiVectorSearch", conn);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandTimeout = 60 * 30;
-            cmd.Parameters.AddWithValue("@Vectors", vectors);
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = "RunWikiVectorSearch";
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.Add(vectorParam);
 
-            using var rdr = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess);
-            var results = new List<WikiPageResult>();
-            while (await rdr.ReadAsync())
+        using var reader = await cmd.ExecuteReaderAsync();
+        var result = new List<WikiPageResult>();
+
+        while (await reader.ReadAsync())
+        {
+            result.Add(new WikiPageResult
             {
-                results.Add(new WikiPageResult
-                {
-                    Id = rdr.GetInt32(0),
-                    Title = rdr.GetString(1),
-                    Subject = rdr.GetString(2),
-                    Content = rdr.GetString(3),
-                    SimilarityScore = rdr.GetDouble(4)
-                });
-            }
+                Id = reader.GetInt32(0),
+                Title = reader.GetString(1),
+                Subject = reader.GetString(2),
+                Content = reader.GetString(3),
+                SimilarityScore = reader.GetDouble(4)
+            });
+        }
 
-            await rdr.CloseAsync();
-            return results;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            throw;
-        }
-        
+        return result;
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Diagnostics;
-using System.Text.Json.Nodes;
 using SqlRagProvider.Model;
 
 namespace SqlRagProvider;
@@ -23,6 +22,8 @@ public class SqlRagDataFetcher
         var results = await SqlVectorExecuter.RunVectorSearchStoredProcedure(vectorsTable);
         sw.Stop();
         Debug.WriteLine($"==== Vector search : {sw.ElapsedMilliseconds} ms ====");
+        Debug.WriteLine(string.Join("\n", results.Select(r => $"{r.Title}\n {r.Content}\n")));
+        Debug.WriteLine($"==== END OF RESULTS ====");
         return results.ToArray();
     }
 }

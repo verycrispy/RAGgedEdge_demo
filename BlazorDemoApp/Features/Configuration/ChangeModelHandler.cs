@@ -1,26 +1,24 @@
 ﻿using LMStudioClient;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 
 namespace BlazorDemoApp.wwwroot.Features.Configuration;
 
 public class ChangeModelHandler
 {
-    private readonly LMStudioConfig _config;
-    private readonly LmStudioClient _lmClient;
+    private readonly ConfigService _configService;
 
-    public ChangeModelHandler(IOptions<LMStudioConfig> config)
+    public ChangeModelHandler(ConfigService configService)
     {
-        _config = config.Value;
-        _lmClient = new LmStudioClient(_config.Endpoint);
+        _configService = configService;
     }
 
     public async Task HandleAsync(HttpContext context)
     {
-        context.Response.Headers.Append("Content-Type", "text/event-stream");
-        //var messages = await CreateMessages(context);
+        using var reader = new StreamReader(context.Request.Body);
+        var model = await reader.ReadToEndAsync();
+        _configService.UpdateModel(model);
 
-        var answer = ""; // await _lmClient.GetChatCompletionsAsync(messages);
-
-        await context.Response.WriteAsync(answer);
+        await context.Response.WriteAsync($"Model changed to: {model}");
     }
 }

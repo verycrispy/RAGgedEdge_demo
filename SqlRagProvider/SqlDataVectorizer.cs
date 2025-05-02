@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Dapper;
 using LMStudioClient;
 using Microsoft.Data.SqlClient;
@@ -14,10 +13,10 @@ public class SqlDataVectorizer
     private readonly IConfiguration _config;
     private readonly LmStudioClient _lmClient;
 
-    public SqlDataVectorizer(IConfiguration config)
+    public SqlDataVectorizer(LmStudioClient lmStudioClient, IConfiguration config)
     {
+        _lmClient = lmStudioClient;
         _config = config;
-        _lmClient = new LmStudioClient(_config["LMStudio:Endpoint"] ?? "");
     }
 
     private SqlConnection CreateConnection()
@@ -65,7 +64,7 @@ public class SqlDataVectorizer
             return serialized.SplitString(16000);
         }).ToArray();
 
-        var embeddings = await _lmClient.GetEmbeddingsAsync(input, _config["LmStudio:Embeddings"]??"");
+        var embeddings = await _lmClient.GetEmbeddingsAsync(input);
 
         Debug.WriteLine(embeddings.Count());
 

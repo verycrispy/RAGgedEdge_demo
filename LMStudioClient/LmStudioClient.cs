@@ -2,24 +2,26 @@
 using System.Text;
 using System.Text.Json;
 using LMStudioClient.Model;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace LMStudioClient;
 public class LmStudioClient
 {
     private readonly HttpClient _httpClient;
+    private readonly LMStudioConfig _configuration;
 
-    public LmStudioClient(string baseAddress)
+    public LmStudioClient(IOptions<LMStudioConfig> config)
     {
-        _httpClient = new HttpClient { BaseAddress = new Uri(baseAddress) };
+        _configuration = config.Value;
+        _httpClient = new HttpClient { BaseAddress = new Uri(_configuration.Endpoint) };
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
     }
 
-    public async Task<float[]?> GetEmbeddingAsync(string inputText, string model)
+    public async Task<float[]?> GetEmbeddingAsync(string inputText)
     {
         var requestBody = new
         {
-            model = model,
+            model = _configuration.Embeddings,
             input = inputText
         };
 
@@ -40,11 +42,11 @@ public class LmStudioClient
         }
     }
 
-    public async Task<EmbeddingItem[]?> GetEmbeddingsAsync(string[] inputTexts, string model)
+    public async Task<EmbeddingItem[]?> GetEmbeddingsAsync(string[] inputTexts)
     {
         var requestBody = new
         {
-            model = model,
+            model = _configuration.Embeddings,
             input = inputTexts
         };
 
@@ -67,11 +69,9 @@ public class LmStudioClient
 
     public async Task<string> GetChatCompletionsAsync(params Message[] messages)
     {
-        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-
         ChatRequest message = new ChatRequest()
         {
-            Model = config["LMStudio:Llm"],
+            Model = _configuration.Llm,
             Temperature = 0.7f,
             Messages = messages,
             Stream = false
@@ -96,11 +96,9 @@ public class LmStudioClient
 
     public async IAsyncEnumerable<string> StreamChatCompletionsAsync(params Message[] messages)
     {
-        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-
         ChatRequest message = new ChatRequest()
         {
-            Model = config["LMStudio:Llm"],
+            Model = _configuration.Llm,
             Temperature = 0.7f,
             Messages = messages,
             Stream = true
@@ -141,8 +139,6 @@ public class LmStudioClient
     {
         // Deserialize the JSON response to the EmbeddingResponse class
         var embeddingResponse = JsonSerializer.Deserialize<EmbeddingResponse>(jsonResponse);
-
-        // Extract the embedding array from the first item in the data list
         return embeddingResponse?.Data?.FirstOrDefault()?.Embedding?.ToArray();
     }
 
@@ -159,9 +155,9 @@ public class LmStudioClient
 
     private List<Message> GetCompletionItems(string jsonResponse)
     {
-        var embeddingResponse = JsonSerializer.Deserialize<ChatResponse>(jsonResponse);
+        var chatResponse = JsonSerializer.Deserialize<ChatResponse>(jsonResponse);
 
-        return embeddingResponse?.Choices?
+        return chatResponse?.Choices?
             .Select(choice => choice.Message)
             .ToList() ?? new List<Message>();
     }
