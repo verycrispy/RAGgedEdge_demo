@@ -10,13 +10,6 @@
 
 <button class="btn btn-primary" @onclick="CreateVectors">Create Vectors</button>
 <br />
-<select @bind="SelectedModel">
-    @foreach (var model in AvailableModels)
-    {
-        <option value="@model">@model</option>
-    }
-</select>
-<button @onclick="ChangeModel">Apply</button>
 
 @foreach (var line in lines)
 {
@@ -56,25 +49,5 @@
 
         IsLoading = false;
         StateHasChanged();
-    }
-
-    private async Task ChangeModel()
-    {
-        var content = new StringContent(SelectedModel);
-        using var http = new HttpClient
-            {
-                BaseAddress = new Uri(NavigationManager.BaseUri)
-            };
-
-        var response = await http.PostAsync("config/change-model", content);
-
-        if (response.IsSuccessStatusCode)
-        {
-            lines = new List<string> { $"Model changed to {SelectedModel}" };
-        }
-        else
-        {
-            lines = new List<string> { "Failed to change model." };
-        }
     }
 }

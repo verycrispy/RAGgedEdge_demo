@@ -9,6 +9,8 @@ public class SqlRagDataFetcher
 
     public static async Task<WikiPageResult[]> GetDatabaseResults(float[] vectors)
     {
+
+        Debugger.Break();
         var sw = Stopwatch.StartNew();
         var vectorsTable = new DataTable();
         vectorsTable.Columns.Add("VectorValueId", typeof(int));

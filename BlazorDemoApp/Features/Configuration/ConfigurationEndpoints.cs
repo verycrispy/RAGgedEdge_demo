@@ -10,12 +10,6 @@ public static class ConfigurationEndpoints
         {
             await handler.HandleAsync(context);
         });
-
-        app.MapPost("/config/change-model", async (ChangeModelHandler handler, HttpContext context) =>
-        {
-            await handler.HandleAsync(context);
-        });
-
     }
 
 }
