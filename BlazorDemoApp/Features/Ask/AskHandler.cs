@@ -2,7 +2,6 @@
 using System.Text.Json;
 using LMStudioClient;
 using LMStudioClient.Model;
-using Microsoft.Extensions.Options;
 using SqlRagProvider;
 using WikiAssistent;
 
@@ -20,7 +19,8 @@ public class AskHandler
     public async Task HandleAsync(HttpContext context)
     {
         context.Response.Headers.Append("Content-Type", "text/event-stream");
-        var messages = await CreateMessages(context);
+        string question = await ReadQuestion(context);
+        var messages = await CreateMessages(question);
 
         var answer = await _lmClient.GetChatCompletionsAsync(messages);
 
@@ -30,7 +30,8 @@ public class AskHandler
     public async Task HandleStreamedAsync(HttpContext context)
     {
         context.Response.Headers.Append("Content-Type", "text/event-stream");
-        var messages = await CreateMessages(context);
+        string question = await ReadQuestion(context);
+        var messages = await CreateMessages(question);
 
         await foreach (var part in _lmClient.StreamChatCompletionsAsync(messages))
         {
@@ -38,13 +39,15 @@ public class AskHandler
             await context.Response.Body.FlushAsync();
         }
     }
-
-    private async Task<Message[]> CreateMessages(HttpContext context)
+    private static async Task<string> ReadQuestion(HttpContext context)
     {
-        var messages = new List<Message>();
         using var reader = new StreamReader(context.Request.Body);
         var question = await reader.ReadToEndAsync();
+        return question;
+    }
 
+    private async Task<Message[]> CreateMessages(string question)
+    {
         var vectors = await _vectorizer.VectorizeQuestion(question);
         var results = await SqlRagDataFetcher.GetDatabaseResults(vectors);
 
@@ -72,10 +75,12 @@ public class AskHandler
         var promptSetup = new Message { Content = WikiAssistantPromptBuilder.BuildChatSystemPrompt(), Role = "system" };
         var questionPrompt = new Message { Content = userMessagePrompt, Role = "system" };
         var userQuestion = new Message { Content = question, Role = "user" };
+
+        var messages = new List<Message>();
         messages.Add(promptSetup);
         messages.Add(questionPrompt);
         messages.Add(userQuestion);
 
         return messages.ToArray();
-    } 
+    }
 }
