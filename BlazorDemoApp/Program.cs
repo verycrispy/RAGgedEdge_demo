@@ -13,7 +13,6 @@ builder.Services.AddHttpClient();
 builder.Services.Configure<LMStudioConfig>(builder.Configuration.GetSection("LMStudio"));
 builder.Services.AddScoped<AskHandler>();
 builder.Services.AddScoped<VectorizeDatabaseHandler>();
-builder.Services.AddScoped<ChangeModelHandler>();
 builder.Services.AddScoped<SqlDataVectorizer>();
 builder.Services.AddScoped<Vectorizer>();
 builder.Services.AddScoped<LmStudioClient>();
@@ -40,14 +39,5 @@ app.MapRazorComponents<App>()
 app.MapAskEndpoints();
 app.MapConfigurationEndpoints();
 
-//app.MapPost("/askquestion", async (AskQuestionHandler handler, HttpContext context) =>
-//{
-//    await handler.HandleAsync(context);
-//});
-
-//app.MapPost("/askquestion/stream", async (AskQuestionHandler handler, HttpContext context) =>
-//{
-//    await handler.HandleStreamedAsync(context);
-//});
 
 app.Run();

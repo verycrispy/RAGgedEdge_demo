@@ -1,10 +1,5 @@
-﻿using System.Diagnostics;
-using System.Text;
-using System.Text.Json;
-using LMStudioClient;
+﻿using LMStudioClient;
 using LMStudioClient.Model;
-using SqlRagProvider;
-using WikiAssistent;
 
 public class AskHandler
 {
@@ -36,12 +31,7 @@ public class AskHandler
     }
 
     private async Task<Message[]> CreateMessages(string question)
-    {
-        Debugger.Break();
-
-        var vectors = await _vectorizer.VectorizeQuestion(question);
-        var results = await SqlRagDataFetcher.GetDatabaseResults(vectors);
-       
+    {      
         var userQuestion = new Message { Content = question, Role = "user" };
 
         return [userQuestion];
