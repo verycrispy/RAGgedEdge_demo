@@ -3,7 +3,6 @@ using Dapper;
 using LMStudioClient;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using SqlRagProvider.Extensions;
 using SqlRagProvider.Model;
 
 namespace SqlRagProvider;
@@ -26,6 +25,7 @@ public class SqlDataVectorizer
 
     public async IAsyncEnumerable<string> VectorizeEntities()
     {
+        Debugger.Break();
         using var connection = CreateConnection();
         var sql = "SELECT Id, Title, Subject, Content FROM Wiki";
         var wikipages = await connection.QueryAsync<WikiPageResult>(sql);

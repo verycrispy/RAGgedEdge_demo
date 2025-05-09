@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Diagnostics;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using LMStudioClient.Model;
@@ -25,7 +26,6 @@ public class LmStudioClient
             input = inputText
         };
 
-        // Serialize the request body using System.Text.Json
         var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
 
         var response = await _httpClient.PostAsync("/v1/embeddings", content);
@@ -69,6 +69,7 @@ public class LmStudioClient
 
     public async Task<string> GetChatCompletionsAsync(params Message[] messages)
     {
+        Debugger.Break();
         ChatRequest message = new ChatRequest()
         {
             Model = _configuration.Llm,
