@@ -13,7 +13,6 @@ builder.Services.AddHttpClient();
 builder.Services.Configure<LMStudioConfig>(builder.Configuration.GetSection("LMStudio"));
 builder.Services.AddScoped<AskHandler>();
 builder.Services.AddScoped<VectorizeDatabaseHandler>();
-builder.Services.AddScoped<ChangeModelHandler>();
 builder.Services.AddScoped<SqlDataVectorizer>();
 builder.Services.AddScoped<Vectorizer>();
 builder.Services.AddScoped<LmStudioClient>();
