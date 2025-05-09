@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using System.Text.Json;
 using LMStudioClient;
 using LMStudioClient.Model;
@@ -27,18 +28,6 @@ public class AskHandler
         await context.Response.WriteAsync(answer);
     }
 
-    public async Task HandleStreamedAsync(HttpContext context)
-    {
-        context.Response.Headers.Append("Content-Type", "text/event-stream");
-        string question = await ReadQuestion(context);
-        var messages = await CreateMessages(question);
-
-        await foreach (var part in _lmClient.StreamChatCompletionsAsync(messages))
-        {
-            await context.Response.WriteAsync(part);
-            await context.Response.Body.FlushAsync();
-        }
-    }
     private static async Task<string> ReadQuestion(HttpContext context)
     {
         using var reader = new StreamReader(context.Request.Body);
@@ -51,6 +40,7 @@ public class AskHandler
         var vectors = await _vectorizer.VectorizeQuestion(question);
         var results = await SqlRagDataFetcher.GetDatabaseResults(vectors);
 
+        Debugger.Break();
         var sb = new StringBuilder();
         sb.Append(WikiAssistantPromptBuilder.BuildQuestionPrompt(question));
         sb.AppendLine();

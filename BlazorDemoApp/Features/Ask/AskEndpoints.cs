@@ -9,9 +9,5 @@ public static class AskEndpoints
             await handler.HandleAsync(context);
         });
 
-        app.MapPost("/askquestion/stream", async (AskHandler handler, HttpContext context) =>
-        {
-            await handler.HandleStreamedAsync(context);
-        });
     }
 }
