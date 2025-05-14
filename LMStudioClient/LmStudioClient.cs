@@ -95,45 +95,6 @@ public class LmStudioClient
         }
     }
 
-    public async IAsyncEnumerable<string> StreamChatCompletionsAsync(params Message[] messages)
-    {
-        ChatRequest message = new ChatRequest()
-        {
-            Model = _configuration.Llm,
-            Temperature = 0.7f,
-            Messages = messages,
-            Stream = true
-        };
-
-        var request = new HttpRequestMessage(HttpMethod.Post, "/v1/chat/completions")
-        {
-            Content = new StringContent(JsonSerializer.Serialize(message), Encoding.UTF8, "application/json")
-        };
-
-        var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-        response.EnsureSuccessStatusCode();
-
-        var stream = await response.Content.ReadAsStreamAsync();
-        using var reader = new StreamReader(stream);
-
-        while (!reader.EndOfStream)
-        {
-            var line = await reader.ReadLineAsync();
-
-            if (string.IsNullOrWhiteSpace(line)) continue;
-            if (line.StartsWith("data: "))
-                line = line.Substring("data: ".Length);
-
-            if (line == "[DONE]") break;
-
-            var chunk = JsonSerializer.Deserialize<StreamChunk>(line);
-            var contentPiece = chunk?.Choices?.FirstOrDefault()?.Delta?.Content;
-            if (!string.IsNullOrEmpty(contentPiece))
-            {
-                yield return contentPiece;
-            }
-        }
-    }
 
 
     private float[]? DeserializeEmbedding(string jsonResponse)
