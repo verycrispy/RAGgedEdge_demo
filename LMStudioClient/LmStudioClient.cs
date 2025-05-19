@@ -96,7 +96,6 @@ public class LmStudioClient
 
     public async IAsyncEnumerable<string> StreamChatCompletionsAsync(params Message[] messages)
     {
-        Debugger.Break();
         ChatRequest message = new ChatRequest()
         {
             Model = _configuration.Llm,
