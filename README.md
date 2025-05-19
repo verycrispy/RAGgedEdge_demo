@@ -6,26 +6,25 @@ This project showcases a **Retrieval-Augmented Generation (RAG)** implementation
 - 🤖 **LM Studio** to run a local LLM (e.g., LLaMA)  
 - 🗃️ **SQL Server 2022** with vector search via a stored procedure  
 - ⚡ **Streaming responses** using `text/event-stream`  
-- 🔍 Optional: Integration with **Entity Framework Core** or **Dapper**  
 
 ---
 
 ## 🚀 What’s in the Demo
 
+- Vectorize documents in the database via the configuration page
 - Ask natural language questions  
 - Search your own SQL-based knowledge base using vector similarity  
-- Receive LLM-generated answers, with step-by-step reasoning (if enabled)  
+- Receive LLM-generated answers
 - Switch between local LLMs in LM Studio via the configuration page  
 
 ---
+### Setup
+In the folder "SqlRagProvider/Setup" you can find a SQL script to setup your database
 
-### 1. Requirements
+### Requirements
 .NET 8 SDK
 SQL Server
 LM Studio with a supported local LLM
 
-### 2. Setup
-In the folder "SqlRagProvider/Setup" you can find a SQL script to setup your database
-
-### 📃 License
+### License
 MIT
