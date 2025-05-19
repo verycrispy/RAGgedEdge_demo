@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Diagnostics;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using LMStudioClient.Model;
@@ -77,7 +78,6 @@ public class LmStudioClient
             Stream = false
         };
 
-        // Serialize the request body using System.Text.Json
         var content = new StringContent(JsonSerializer.Serialize(message), Encoding.UTF8, "application/json");
 
         var response = await _httpClient.PostAsync("/v1/chat/completions", content);
@@ -96,6 +96,7 @@ public class LmStudioClient
 
     public async IAsyncEnumerable<string> StreamChatCompletionsAsync(params Message[] messages)
     {
+        Debugger.Break();
         ChatRequest message = new ChatRequest()
         {
             Model = _configuration.Llm,
@@ -137,14 +138,12 @@ public class LmStudioClient
 
     private float[]? DeserializeEmbedding(string jsonResponse)
     {
-        // Deserialize the JSON response to the EmbeddingResponse class
         var embeddingResponse = JsonSerializer.Deserialize<EmbeddingResponse>(jsonResponse);
         return embeddingResponse?.Data?.FirstOrDefault()?.Embedding?.ToArray();
     }
 
     private List<EmbeddingItem> GetEmbeddingItems(string jsonResponse)
     {
-        // Deserialize the JSON into an EmbeddingResponse object
         var embeddingResponse = JsonSerializer.Deserialize<EmbeddingResponse>(jsonResponse);
 
         // Map each item in the response data to an EmbeddingItem

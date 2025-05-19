@@ -26,8 +26,6 @@ public class SqlDataVectorizer
 
     public async IAsyncEnumerable<string> VectorizeEntities()
     {
-        Debugger.Break();
-
         using var connection = CreateConnection();
         var sql = "SELECT Id, Title, Subject, Content FROM Wiki";
         var wikipages = await connection.QueryAsync<WikiPageResult>(sql);
@@ -46,10 +44,8 @@ public class SqlDataVectorizer
                 yield return $"{++itemCount,5}: Vectorizing entity - {wikipage.Title} (ID {wikipage.Id})";
             }
 
-            // Generate text embeddings (vectors) for the batch of documents
             var embeddings = await this.GenerateEmbeddings(wikipageBatch);
 
-            // Update the database with generated text embeddings (vectors) for the batch of documents
             await this.SaveVectors(wikipageBatch, embeddings);
         }
 
@@ -58,11 +54,7 @@ public class SqlDataVectorizer
 
     private async Task<IReadOnlyList<EmbeddingItem>> GenerateEmbeddings(WikiPage[] documents)
     {
-        var input = documents.SelectMany(d =>
-        {
-            string serialized = System.Text.Json.JsonSerializer.Serialize(d);
-            return serialized.SplitString(16000);
-        }).ToArray();
+        var input = documents.Select(d =>  System.Text.Json.JsonSerializer.Serialize(d)).ToArray();
 
         var embeddings = await _lmClient.GetEmbeddingsAsync(input);
 

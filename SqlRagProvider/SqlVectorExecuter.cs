@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using SqlRagProvider.Model;
@@ -13,8 +12,6 @@ internal class SqlVectorExecuter
         var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
         using var conn = new SqlConnection(config["ConnectionString"]);
         await conn.OpenAsync();
-
-        var parameters = new DynamicParameters();
 
         var vectorParam = new SqlParameter("@Vectors", SqlDbType.Structured)
         {
