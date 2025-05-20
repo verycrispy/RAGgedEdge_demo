@@ -22,9 +22,9 @@ This project showcases a **Retrieval-Augmented Generation (RAG)** implementation
 In the folder "SqlRagProvider/Setup" you can find a SQL script to setup your database
 
 ### Requirements
-.NET 8 SDK
-SQL Server
-LM Studio with a supported local LLM
+- .NET 8 SDK
+- SQL Server
+- LM Studio with a supported local LLM
 
 ### License
 MIT
