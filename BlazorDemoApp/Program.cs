@@ -1,6 +1,6 @@
 using BlazorDemoApp.Components;
-using BlazorDemoApp.wwwroot.Features.Ask;
-using BlazorDemoApp.wwwroot.Features.Configuration;
+using BlazorDemoApp.Features.Ask;
+using BlazorDemoApp.Features.Configuration;
 using LMStudioClient;
 using SqlRagProvider;
 
@@ -39,15 +39,5 @@ app.MapRazorComponents<App>()
 
 app.MapAskEndpoints();
 app.MapConfigurationEndpoints();
-
-//app.MapPost("/askquestion", async (AskQuestionHandler handler, HttpContext context) =>
-//{
-//    await handler.HandleAsync(context);
-//});
-
-//app.MapPost("/askquestion/stream", async (AskQuestionHandler handler, HttpContext context) =>
-//{
-//    await handler.HandleStreamedAsync(context);
-//});
 
 app.Run();

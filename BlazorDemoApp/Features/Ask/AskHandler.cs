@@ -3,8 +3,9 @@ using System.Text.Json;
 using LMStudioClient;
 using LMStudioClient.Model;
 using SqlRagProvider;
-using WikiAssistent;
+using WikiAssistant;
 
+namespace BlazorDemoApp.Features.Ask;
 public class AskHandler
 {
     private readonly LmStudioClient _lmClient;

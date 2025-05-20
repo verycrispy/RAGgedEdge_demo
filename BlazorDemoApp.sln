@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorDemoApp", "BlazorDemo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMStudioClient", "LMStudioClient\LMStudioClient.csproj", "{7392101F-D392-4FDA-8F9D-734C52B41E2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiAssistant", "WikiAssistent\WikiAssistant.csproj", "{FB220934-751D-4D1A-9D51-BC0DB2B7FF1C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiAssistant", "WikiAssistant\WikiAssistant.csproj", "{FB220934-751D-4D1A-9D51-BC0DB2B7FF1C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlRagProvider", "SqlRagProvider\SqlRagProvider.csproj", "{66B13C68-CB08-44B0-ADA1-5743A2C15DCF}"
 EndProject

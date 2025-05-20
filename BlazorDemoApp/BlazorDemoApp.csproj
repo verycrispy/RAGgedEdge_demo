@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\LMStudioClient\LMStudioClient.csproj" />
     <ProjectReference Include="..\SqlRagProvider\SqlRagProvider.csproj" />
+    <ProjectReference Include="..\WikiAssistant\WikiAssistant.csproj" />
     <ProjectReference Include="..\WikiAssistent\WikiAssistant.csproj" />
   </ItemGroup>
 

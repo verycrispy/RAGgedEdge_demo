@@ -1,4 +1,4 @@
-﻿namespace BlazorDemoApp.wwwroot.Features.Configuration;
+﻿namespace BlazorDemoApp.Features.Configuration;
 
 public static class ConfigurationEndpoints
 {

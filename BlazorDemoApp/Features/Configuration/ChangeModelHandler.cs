@@ -1,8 +1,6 @@
 ﻿using LMStudioClient;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Options;
 
-namespace BlazorDemoApp.wwwroot.Features.Configuration;
+namespace BlazorDemoApp.Features.Configuration;
 
 public class ChangeModelHandler
 {

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace WikiAssistent;
+namespace WikiAssistant;
 public class WikiAssistantPromptBuilder
 {
     public static string BuildChatSystemPrompt()
