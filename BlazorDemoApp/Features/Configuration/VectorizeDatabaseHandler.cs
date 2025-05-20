@@ -1,6 +1,6 @@
 ﻿using SqlRagProvider;
 
-namespace BlazorDemoApp.wwwroot.Features.Configuration;
+namespace BlazorDemoApp.Features.Configuration;
 
 public class VectorizeDatabaseHandler
 {

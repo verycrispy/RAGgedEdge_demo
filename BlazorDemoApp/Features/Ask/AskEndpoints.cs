@@ -1,4 +1,4 @@
-﻿namespace BlazorDemoApp.wwwroot.Features.Ask;
+﻿namespace BlazorDemoApp.Features.Ask;
 
 public static class AskEndpoints
 {
